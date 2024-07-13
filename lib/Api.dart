@@ -15,7 +15,7 @@ class TimbuApi {
             '$baseUrl?organization_id=$organizationId&Appid=$appId&Apikey=$apiKey'),
       );
 
-      print('Status Code: ${response.statusCode}u');
+      print('Status Code: ${response.statusCode}');
       print('Response Body: ${response.body}');
 
       if (response.statusCode == 200) {
