@@ -17,7 +17,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
   final TextEditingController addressController = TextEditingController();
   final TextEditingController numberController = TextEditingController();
   int selectedValue = 1;
-  final isButtonEnabled = false.obs;
+  final isButtonEnabled = true.obs;
   double delivery = 1500.00;
 
   void _validateForm() {
@@ -30,7 +30,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
     if (nameController.text.isEmpty ||
         addressController.text.isEmpty ||
         numberController.text.isEmpty) {
-      Get.snackbar('Error', 'All fields are required');
+      Get.snackbar('Error', 'All fields are required',
+          backgroundColor: Colors.red, colorText: Colors.white);
       return;
     }
     Get.to(() => PaymentSuccessPage());
@@ -209,6 +210,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       )
                     ],
                   ),
+                  SizedBox(
+                    height: 10,
+                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Row(
@@ -238,36 +242,43 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                       )),
-                  Row(
-                    children: [
-                      const Text("Total Price"),
-                      const Spacer(),
-                      Text('${totalPrice}')
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      const Text("Delivery Fee"),
-                      const Spacer(),
-                      Text("${delivery}")
-                    ],
-                  ),
-                  const Row(
-                    children: [Text("Discount"), Spacer(), Text("0.00")],
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  const Divider(),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    children: [
-                      const Text("Total Price"),
-                      const Spacer(),
-                      Text('$total')
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            const Text("Total Price"),
+                            const Spacer(),
+                            Text('₦     ${totalPrice}')
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            const Text("Delivery Fee"),
+                            const Spacer(),
+                            Text("₦       ${delivery}")
+                          ],
+                        ),
+                        const Row(
+                          children: [Text("Discount"), Spacer(), Text("0.00")],
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        const Divider(),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          children: [
+                            const Text("Total Price"),
+                            const Spacer(),
+                            Text('₦     $total')
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

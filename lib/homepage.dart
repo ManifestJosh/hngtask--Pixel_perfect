@@ -6,6 +6,8 @@ import 'package:pixel_perfect/Api.dart';
 import 'package:pixel_perfect/controller/bottomnav.dart';
 import 'package:pixel_perfect/productsdetails.dart';
 
+import 'cart.dart';
+
 class Homepage extends StatefulWidget {
   const Homepage({
     super.key,
@@ -317,7 +319,7 @@ class _HomepageState extends State<Homepage> {
                     ),
                     SizedBox(
                       width: 390,
-                      height: 1900,
+                      height: 1600,
                       child: GridView.builder(
                         physics: NeverScrollableScrollPhysics(),
                         itemCount: products.length,
@@ -472,6 +474,25 @@ class _HomepageState extends State<Homepage> {
           type: BottomNavigationBarType.fixed,
           onTap: (index) {
             controller.changePage(index);
+            switch (index) {
+              case 0:
+                Get.off(() => Homepage());
+                break;
+              case 1:
+                //Get.to(()=> Productspage());
+                break;
+              case 2:
+                Get.to(() => CartPage(
+                      checkoutItems: [],
+                    ));
+                break;
+              case 3:
+                //Get.to(()=> MyOrderPage());
+                break;
+              case 4:
+                // Get.to(()=> ProfilePage());
+                break;
+            }
           },
         ),
       ),

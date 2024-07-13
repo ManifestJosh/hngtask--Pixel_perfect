@@ -48,7 +48,7 @@ class _CartPageState extends State<CartPage> {
   void _calculateTotalPrice() {
     double total = 0.0;
     for (var item in widget.checkoutItems) {
-      total += item['quantity'] * item['price'];
+      total = item['quantity'] * item['price'];
     }
     setState(() {
       totalPrice = total;
@@ -152,46 +152,50 @@ class _CartPageState extends State<CartPage> {
                   );
                 }),
           ),
-          Row(
-            children: [
-              Column(
-                children: [
-                  Text("Total Price"),
-                  Text(
-                    "₦$totalPrice",
-                    style: TextStyle(fontSize: 20, color: Colors.blue.shade800),
-                  )
-                ],
-              ),
-              Spacer(),
-              GestureDetector(
-                  onTap: _addToCheckout,
-                  child: Container(
-                      width: 141,
-                      height: 42,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(16)),
-                        color: Colors.blue.shade800,
-                      ),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              "assets/cart.png",
-                              color: Colors.white,
-                              width: 14,
-                              height: 14,
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Text(
-                              "Checkout",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 14),
-                            )
-                          ])))
-            ],
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Row(
+              children: [
+                Column(
+                  children: [
+                    Text("Total Price"),
+                    Text(
+                      "₦$totalPrice",
+                      style:
+                          TextStyle(fontSize: 20, color: Colors.blue.shade800),
+                    )
+                  ],
+                ),
+                Spacer(),
+                GestureDetector(
+                    onTap: _addToCheckout,
+                    child: Container(
+                        width: 141,
+                        height: 42,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(16)),
+                          color: Colors.blue.shade800,
+                        ),
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                "assets/cart.png",
+                                color: Colors.white,
+                                width: 14,
+                                height: 14,
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                "Checkout",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 14),
+                              )
+                            ])))
+              ],
+            ),
           ),
           SizedBox(
             height: 10,
