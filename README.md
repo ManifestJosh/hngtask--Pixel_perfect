@@ -10,10 +10,9 @@ This Flutter application is a pixel-perfect implementation of the assigned Timbu
 
 *Home Screen with product categories and special offers.*
 
-![Screenshot_1720903888](https://github.com/user-attachments/assets/89c5bdb6-e456-4aca-a77b-828d05b7c709)
+![Screenshot_1720905330](https://github.com/user-attachments/assets/48569ced-8c96-416a-ad51-70f57606956d)
 
-![Screenshot_1720903872](https://github.com/user-attachments/assets/87d9bf09-d66c-4673-acbf-7ab1ac548357)
-
+![Screenshot_1720905379](https://github.com/user-attachments/assets/1ae64a4c-5b92-47bb-8fb6-38571df00959)
 
 
 *Product Details Screen displaying size, colors, and quantity selection.*
@@ -23,6 +22,8 @@ This Flutter application is a pixel-perfect implementation of the assigned Timbu
 ![Screenshot_1720903872](https://github.com/user-attachments/assets/7a896b11-dad5-498a-b03a-d00f56755bb7)
 
 ## Features
+
+
 
 - **Product Listing:** Display a list of products fetched from the Timbu API.
 - **Product Details:** View detailed information about each product, including sizes, colors, and reviews.
