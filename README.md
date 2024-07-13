@@ -19,7 +19,7 @@ This Flutter application is a pixel-perfect implementation of the assigned Timbu
 ![Screenshot_1720903480](https://github.com/user-attachments/assets/d3e57994-fbaa-4942-b7b3-2af4e57388e2)
 
 *Checkout Screen showing order summary, personal information, delivery options, and price summary.*
-![Screenshot_1720903872](https://github.com/user-attachments/assets/7a896b11-dad5-498a-b03a-d00f56755bb7)
+
 
 ## Features
 
