@@ -32,5 +32,5 @@ This Flutter application is a pixel-perfect implementation of the assigned Timbu
 - **Intuitive UI:** User-friendly and adaptive interface with clear labeling and spacing.
 
 App download link
-https://appetize.io/app/b_xalblhgbv27e46z7u7m32tfdwm
+https://appetize.io/app/b_d7h6s2xkfuweuxz26w3sabovra
 https://drive.google.com/file/d/1HMYYjeDOodIe_qWeriBzLiq7lxRwFkvU/view?usp=drive_link
