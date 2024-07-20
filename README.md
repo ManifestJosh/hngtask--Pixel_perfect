@@ -13,9 +13,10 @@ Below are the pages for from the bottomNavigator bar :
 3. Cart
 4. My orders Page also Know as the order history page
 5. Category page e.g: Nike
+![Screenshot_1721464181](https://github.com/user-attachments/assets/c32a6c04-2fd1-406e-9127-408592969adf)
 
 
-![Screenshot_1721464181](https://github.com/user-attachments/assets/8d454a24-ed23-41ff-8935-fd1953f238ca)
+
 ![Screenshot_1721464175](https://github.com/user-attachments/assets/c33cee96-c036-4adc-a0f6-261b5be96c04)
 ![Screenshot_1721464171](https://github.com/user-attachments/assets/957c1175-94e5-4a1f-8acd-3adbebfabeee)
 ![Screenshot_1721464150](https://github.com/user-attachments/assets/23d85cd3-6908-4357-814c-6470eb9493e5)
