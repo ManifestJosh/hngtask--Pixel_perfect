@@ -29,5 +29,5 @@ Below are the pages for from the bottomNavigator bar :
 - **Intuitive UI:** User-friendly and adaptive interface with clear labeling and spacing.
 
 App download link
-https://drive.google.com/file/d/1iWmPwQnaXk13Dzb24mna75S_y1gfV6qU/view?usp=drive_link
-https://appetize.io/app/b_w3ucnvkommisonykdfvuyzh3e4
+https://drive.google.com/file/d/1_448pHv-nharh8i9vGA0BEfInoywUWgV/view?usp=drive_link
+https://appetize.io/app/b_mlr5fh6aynf3iauw243echuwi4
