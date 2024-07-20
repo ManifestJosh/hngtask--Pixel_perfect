@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pixel_perfect/controller/bottomnav.dart';
 import 'package:pixel_perfect/controller/cartcontroller.dart';
-
+import 'package:intl/intl.dart';
 import 'controller/ordercontroller.dart';
 import 'database/databasehelper.dart';
 import 'orderdetails.dart';
@@ -84,7 +84,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                    'Date: ${order.date.toLocal()}'), // Format the date as needed
+                                    'Date: ${DateFormat('yyyy-MM-dd -   HH:mm').format(order.date)}'),
                                 Text(
                                   'Total Price: ₦ ${order.totalPrice.toStringAsFixed(2)}',
                                   style: TextStyle(

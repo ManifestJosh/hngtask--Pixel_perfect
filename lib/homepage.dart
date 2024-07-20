@@ -51,7 +51,9 @@ class _HomepageState extends State<Homepage> {
 
   void addToWishlist(Products product) {
     wishlistController.addToWishlist(product);
-    Get.to(() => WishlistPage()); // Navigate to the wishlist page
+    Get.to(() => WishlistPage(
+          products: wishlistController.products,
+        ));
   }
 
   @override
@@ -72,7 +74,9 @@ class _HomepageState extends State<Homepage> {
         actions: [
           IconButton(
             onPressed: () {
-              Get.to(() => WishlistPage());
+              Get.to(() => WishlistPage(
+                    products: wishlistController.products,
+                  ));
             },
             icon: Icon(
               CupertinoIcons.heart,
@@ -366,7 +370,7 @@ class _HomepageState extends State<Homepage> {
                                         product: product,
                                         controller: bottomNavigationController,
                                         cartController: widget.cartController,
-                                        allProducts: [],
+                                        allProducts: products,
                                       ));
                                 },
                                 child: Column(

@@ -104,7 +104,7 @@ class _ProductsdetailsState extends State<Productsdetails> {
       print('Product: ${prod.name}, Category: ${prod.categories}');
     }
     List<Products> filteredProducts = widget.allProducts
-        .where((product) => product.categories == widget.product.categories)
+        .where((prod) => prod.categories.contains(categoryType))
         .toList();
     return Scaffold(
       appBar: AppBar(),
@@ -227,8 +227,8 @@ class _ProductsdetailsState extends State<Productsdetails> {
               ToggleButtons(
                 children: [
                   Container(
-                    width: 10,
-                    height: 10,
+                    width: 20,
+                    height: 20,
                     decoration: const BoxDecoration(color: Colors.amber),
                   ),
                   Container(

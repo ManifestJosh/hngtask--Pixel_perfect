@@ -10,10 +10,11 @@ import 'productsdetails.dart';
 class ProductsPage extends StatefulWidget {
   final BottomNavigationController bottomNavigationController;
   final CartController cartController;
-  const ProductsPage(
-      {super.key,
-      required this.bottomNavigationController,
-      required this.cartController});
+  const ProductsPage({
+    super.key,
+    required this.bottomNavigationController,
+    required this.cartController,
+  });
 
   @override
   State<ProductsPage> createState() => _ProductsPageState();
@@ -66,7 +67,7 @@ class _ProductsPageState extends State<ProductsPage> {
                                   product: product,
                                   controller: widget.bottomNavigationController,
                                   cartController: widget.cartController,
-                                  allProducts: [],
+                                  allProducts: products,
                                 ));
                           },
                           child: Column(
