@@ -5,22 +5,28 @@ import 'package:pixel_perfect/Api.dart';
 import 'package:pixel_perfect/cart.dart';
 import 'package:pixel_perfect/controller/bottomnav.dart';
 
-import 'homepage.dart';
+import 'controller/cartcontroller.dart';
 
 class Productsdetails extends StatefulWidget {
   final BottomNavigationController controller;
+  final List<Products> allProducts;
+  final CartController cartController;
   final Products product;
-  const Productsdetails(
-      {super.key, required this.product, required this.controller});
+  Productsdetails(
+      {super.key,
+      required this.product,
+      required this.controller,
+      required this.cartController,
+      required this.allProducts});
 
   @override
   State<Productsdetails> createState() => _ProductsdetailsState();
 }
 
 class _ProductsdetailsState extends State<Productsdetails> {
-  List<Map<String, dynamic>> checkoutItems = [];
   int _counter = 0;
   List<bool> _isSelected = List.generate(7, (index) => false);
+  List<bool> _isSelectedsports = List.generate(3, (index) => false);
   List<bool> colorSelect = List.generate(7, (index) => false);
 
   void _incrementCounter() {
@@ -44,6 +50,9 @@ class _ProductsdetailsState extends State<Productsdetails> {
         if (_isSelected[i]) {
           selectedSize = ["32", "35", "38", "39", "40", "42", "45"][i];
           break;
+        } else if (_isSelectedsports[i]) {
+          selectedSize = ["Small", "Medium", "Large"][i];
+          break;
         }
       }
 
@@ -55,7 +64,7 @@ class _ProductsdetailsState extends State<Productsdetails> {
         }
       }
 
-      checkoutItems.add({
+      widget.cartController.addItem({
         'product': widget.product.name,
         'product image': widget.product.imageUrl,
         'size': selectedSize,
@@ -64,23 +73,39 @@ class _ProductsdetailsState extends State<Productsdetails> {
         'price': widget.product.price
       });
 
-      // Print statement to debug
       print('Added to checkout:');
       print('Product: ${widget.product.name}');
       print('Size: $selectedSize');
       print('Color: $selectedColor');
       print('Quantity: $_counter');
       print('Price: ${widget.product.price}');
-      print('Current checkout items: $checkoutItems');
+
+      widget.controller.changePage(2);
 
       Get.to(() => CartPage(
-            checkoutItems: checkoutItems,
+            cartController: widget.cartController,
+            bottomNavigationController: widget.controller,
           ));
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    String categoryType;
+    if (widget.product.categories.contains('footwears')) {
+      categoryType = 'footwears';
+    } else if (widget.product.categories.contains('sports wears')) {
+      categoryType = 'sports wears';
+    } else {
+      categoryType = 'Other';
+    }
+    print('Main product category: $categoryType');
+    for (var prod in widget.allProducts) {
+      print('Product: ${prod.name}, Category: ${prod.categories}');
+    }
+    List<Products> filteredProducts = widget.allProducts
+        .where((product) => product.categories == widget.product.categories)
+        .toList();
     return Scaffold(
       appBar: AppBar(),
       body: Padding(
@@ -99,22 +124,23 @@ class _ProductsdetailsState extends State<Productsdetails> {
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
-              Text("Iconic Casual Brands"),
+              const Text("Iconic Casual Brands"),
               Text(
                 widget.product.name,
-                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
               ),
               Text(
                 'NGN ${widget.product.price}',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               Row(
                 children: [
-                  Text('100 sold '),
-                  SizedBox(
+                  const Text('100 sold '),
+                  const SizedBox(
                     width: 20,
                   ),
                   Image.asset(
@@ -122,52 +148,79 @@ class _ProductsdetailsState extends State<Productsdetails> {
                     width: 10,
                     height: 10,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 10,
                   ),
-                  Text('4.5 (32 Reviews)'),
+                  const Text('4.5 (32 Reviews)'),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
-              Text(
+              const Text(
                 "Description",
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               Text(widget.product.description),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
-              Text(
-                "Size:",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              ToggleButtons(
-                selectedColor: Colors.white,
-                fillColor: Colors.blue,
-                children: [
-                  Text("32"),
-                  Text("35"),
-                  Text("38"),
-                  Text("39"),
-                  Text("40"),
-                  Text("42"),
-                  Text("45")
-                ],
-                isSelected: _isSelected,
-                onPressed: (index) {
-                  setState(() {
-                    for (int i = 0; i < _isSelected.length; i++) {
-                      _isSelected[i] = i == index;
-                    }
-                  });
-                },
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Text(
+              if (categoryType == 'footwears') ...[
+                const Text(
+                  "Size:",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                ToggleButtons(
+                  selectedColor: Colors.white,
+                  fillColor: Colors.blue,
+                  isSelected: _isSelected,
+                  onPressed: (index) {
+                    setState(() {
+                      for (int i = 0; i < _isSelected.length; i++) {
+                        _isSelected[i] = i == index;
+                      }
+                    });
+                  },
+                  children: const [
+                    Text("32"),
+                    Text("35"),
+                    Text("38"),
+                    Text("39"),
+                    Text("40"),
+                    Text("42"),
+                    Text("45"),
+                  ],
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+              ] else if (categoryType == 'sports wears') ...[
+                const Text(
+                  "Size:",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                ToggleButtons(
+                  selectedColor: Colors.white,
+                  fillColor: Colors.blue,
+                  isSelected: _isSelectedsports,
+                  onPressed: (index) {
+                    setState(() {
+                      for (int i = 0; i < _isSelectedsports.length; i++) {
+                        _isSelectedsports[i] = i == index;
+                      }
+                    });
+                  },
+                  children: const [
+                    Text("Small"),
+                    Text("Medium"),
+                    Text("Large"),
+                  ],
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+              ],
+              const Text(
                 "Colors",
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
@@ -176,37 +229,37 @@ class _ProductsdetailsState extends State<Productsdetails> {
                   Container(
                     width: 10,
                     height: 10,
-                    decoration: BoxDecoration(color: Colors.amber),
+                    decoration: const BoxDecoration(color: Colors.amber),
                   ),
                   Container(
                     width: 20,
                     height: 20,
-                    decoration: BoxDecoration(color: Colors.blue),
+                    decoration: const BoxDecoration(color: Colors.blue),
                   ),
                   Container(
                     width: 20,
                     height: 20,
-                    decoration: BoxDecoration(color: Colors.green),
+                    decoration: const BoxDecoration(color: Colors.green),
                   ),
                   Container(
                     width: 20,
                     height: 20,
-                    decoration: BoxDecoration(color: Colors.black),
+                    decoration: const BoxDecoration(color: Colors.black),
                   ),
                   Container(
                     width: 20,
                     height: 20,
-                    decoration: BoxDecoration(color: Colors.red),
+                    decoration: const BoxDecoration(color: Colors.red),
                   ),
                   Container(
                     width: 20,
                     height: 20,
-                    decoration: BoxDecoration(color: Colors.green),
+                    decoration: const BoxDecoration(color: Colors.green),
                   ),
                   Container(
                     width: 20,
                     height: 20,
-                    decoration: BoxDecoration(color: Colors.purple),
+                    decoration: const BoxDecoration(color: Colors.purple),
                   )
                 ],
                 isSelected: colorSelect,
@@ -218,10 +271,10 @@ class _ProductsdetailsState extends State<Productsdetails> {
                   });
                 },
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
-              Text(
+              const Text(
                 "Quantity",
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
@@ -229,7 +282,7 @@ class _ProductsdetailsState extends State<Productsdetails> {
                 children: [
                   ClipRRect(
                     child: IconButton(
-                        icon: Icon(CupertinoIcons.minus),
+                        icon: const Icon(CupertinoIcons.minus),
                         onPressed: _decrementCounter),
                   ),
                   Container(
@@ -242,24 +295,25 @@ class _ProductsdetailsState extends State<Productsdetails> {
                       )),
                   ClipRRect(
                     child: IconButton(
-                        icon: Icon(CupertinoIcons.add),
+                        icon: const Icon(CupertinoIcons.add),
                         onPressed: _incrementCounter),
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 30,
               ),
               Text(
                 "More from ${widget.product.name}",
-                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
               ),
               SizedBox(
                 width: 390,
                 height: 612,
                 child: GridView.builder(
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: 4,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: filteredProducts.length,
                   gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                     maxCrossAxisExtent: 350,
                     mainAxisSpacing: 14,
@@ -267,12 +321,14 @@ class _ProductsdetailsState extends State<Productsdetails> {
                     childAspectRatio: 0.7,
                   ),
                   itemBuilder: (context, index) {
-                    final product = widget.product;
+                    final product = filteredProducts[index];
                     return GestureDetector(
                       onTap: () {
                         Get.to(() => Productsdetails(
                               product: product,
                               controller: widget.controller,
+                              cartController: widget.cartController,
+                              allProducts: widget.allProducts,
                             ));
                       },
                       child: Column(
@@ -299,7 +355,7 @@ class _ProductsdetailsState extends State<Productsdetails> {
                                         color: Colors.grey.shade400,
                                         borderRadius:
                                             BorderRadius.circular(18)),
-                                    child: Icon(
+                                    child: const Icon(
                                       Icons.favorite_border_outlined,
                                       size: 18,
                                       color: Colors.white,
@@ -316,7 +372,7 @@ class _ProductsdetailsState extends State<Productsdetails> {
                               ),
                             ]),
                           ),
-                          Text("Athletic/Sportswear"),
+                          const Text("Athletic/Sportswear"),
                           Text(
                             product.name,
                             style: const TextStyle(
@@ -330,12 +386,12 @@ class _ProductsdetailsState extends State<Productsdetails> {
                                 width: 10,
                                 height: 10,
                               ),
-                              Text("4.5 (100 sold)")
+                              const Text("4.5 (100 sold)")
                             ],
                           ),
                           Text(
                             'NGN ${product.price}',
-                            style: TextStyle(color: Colors.blue),
+                            style: const TextStyle(color: Colors.blue),
                           ),
                           Row(
                             children: [
@@ -345,20 +401,20 @@ class _ProductsdetailsState extends State<Productsdetails> {
                                     color: Colors.grey.shade500,
                                     decoration: TextDecoration.lineThrough),
                               ),
-                              Spacer(),
+                              const Spacer(),
                               Container(
                                   width: 36,
                                   height: 28,
                                   decoration: BoxDecoration(
                                       color: Colors.blue.shade100,
-                                      borderRadius: BorderRadius.all(
+                                      borderRadius: const BorderRadius.all(
                                           Radius.circular(16))),
-                                  child: Icon(
+                                  child: const Icon(
                                     CupertinoIcons.shopping_cart,
                                     size: 15,
                                     color: Colors.blue,
                                   )),
-                              SizedBox(
+                              const SizedBox(
                                 width: 10,
                               )
                             ],
@@ -369,23 +425,24 @@ class _ProductsdetailsState extends State<Productsdetails> {
                   },
                 ),
               ),
-              Text("Total Price:"),
-              SizedBox(
+              const Text("Total Price:"),
+              const SizedBox(
                 height: 10,
               ),
               Row(
                 children: [
                   Text(
                     "₦${widget.product.price}",
-                    style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                        fontSize: 19, fontWeight: FontWeight.bold),
                   ),
-                  Spacer(),
+                  const Spacer(),
                   GestureDetector(
                     onTap: addtoCart,
                     child: Container(
                       width: 141,
                       height: 42,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(16)),
                         color: Colors.blue,
                       ),
@@ -398,10 +455,10 @@ class _ProductsdetailsState extends State<Productsdetails> {
                             width: 14,
                             height: 14,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 10,
                           ),
-                          Text(
+                          const Text(
                             "Add to Cart",
                             style: TextStyle(color: Colors.white, fontSize: 14),
                           )
@@ -411,7 +468,7 @@ class _ProductsdetailsState extends State<Productsdetails> {
                   )
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               )
             ],

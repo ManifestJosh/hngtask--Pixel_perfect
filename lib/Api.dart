@@ -44,18 +44,21 @@ class Products {
   final String name;
   final String imageUrl;
   final String description;
-  final price;
+  final double price;
   final double quantity;
-  bool available;
+  final bool available;
+  final List<String> categories;
 
-  Products(
-      {required this.id,
-      required this.name,
-      required this.imageUrl,
-      required this.description,
-      required this.price,
-      required this.quantity,
-      required this.available});
+  Products({
+    required this.id,
+    required this.name,
+    required this.imageUrl,
+    required this.description,
+    required this.price,
+    required this.quantity,
+    required this.available,
+    required this.categories,
+  });
 
   factory Products.fromJson(Map<String, dynamic> json, String imageBaseUrl) {
     String extractImageUrl(List<dynamic> photos) {
@@ -87,13 +90,24 @@ class Products {
       return 0.00;
     }
 
+    List<String> extractCategories(List<dynamic>? categories) {
+      if (categories != null && categories.isNotEmpty) {
+        return categories
+            .map((category) => category['name'] as String)
+            .toList();
+      }
+      return [];
+    }
+
     return Products(
-        id: json['unique_id'],
-        name: json['name'],
-        imageUrl: extractImageUrl(json['photos']),
-        description: json['description'] ?? 'No Description',
-        price: extractPrice(json['current_price']),
-        quantity: json['available_quantity'],
-        available: json['is_available']);
+      id: json['unique_id'],
+      name: json['name'],
+      imageUrl: extractImageUrl(json['photos']),
+      description: json['description'] ?? 'No Description',
+      price: extractPrice(json['current_price']),
+      quantity: json['available_quantity'] ?? 0.0,
+      available: json['is_available'],
+      categories: extractCategories(json['categories']),
+    );
   }
 }

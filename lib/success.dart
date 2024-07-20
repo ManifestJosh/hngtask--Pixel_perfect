@@ -15,36 +15,43 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset("assets/mark.png"),
-            Text(
-              "Payment Successful",
-              style: TextStyle(fontSize: 18),
-            ),
-            Text(
-                "You have successfully placed an order. Details of your order has been sent to your email. "),
-            SizedBox(
-              height: 20,
-            ),
-            SizedBox(
-              width: 350,
-              height: 42,
-              child: ElevatedButton(
-                onPressed: () {
-                  Get.to(() => Homepage());
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue.shade700,
-                ),
-                child: Text(
-                  'Pay',
-                  style: TextStyle(color: Colors.white),
-                ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset("assets/mark.png"),
+              Text(
+                "Payment Successful",
+                style: TextStyle(fontSize: 18),
               ),
-            )
-          ],
+              Text(
+                "You have successfully placed an order. Details of your order has been sent to your email. ",
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              SizedBox(
+                width: 350,
+                height: 42,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Get.offAll(() => Homepage(
+                          cartController: Get.find(),
+                        ));
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue.shade700,
+                  ),
+                  child: Text(
+                    'Go To Home',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

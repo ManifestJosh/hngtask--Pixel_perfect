@@ -1,34 +1,68 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pixel_perfect/Api.dart';
-
+import 'package:pixel_perfect/category.dart';
 import 'package:pixel_perfect/controller/bottomnav.dart';
+import 'package:pixel_perfect/controller/cartcontroller.dart';
+import 'package:pixel_perfect/products.dart';
 import 'package:pixel_perfect/productsdetails.dart';
-
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'cart.dart';
+import 'controller/wishlist.dart';
 
 class Homepage extends StatefulWidget {
+  final CartController cartController;
   const Homepage({
     super.key,
+    required this.cartController,
   });
+
   @override
   State<Homepage> createState() => _HomepageState();
 }
 
 class _HomepageState extends State<Homepage> {
   final TimbuApi timbuApi = TimbuApi();
-  late BottomNavigationController controller;
+  late BottomNavigationController bottomNavigationController;
+  final PageController _controller = PageController();
+  final WishlistController wishlistController = Get.put(WishlistController());
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
-    controller = BottomNavigationController();
+    _timer = Timer.periodic(Duration(seconds: 2), (timer) {
+      if (_controller.hasClients) {
+        final page = (_controller.page ?? 0).toInt();
+        final nextPage = (page + 1) % 4; // Assuming you have 4 pages
+        _controller.animateToPage(
+          nextPage,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+    bottomNavigationController =
+        BottomNavigationController(cartController: widget.cartController);
+  }
+
+  void addToWishlist(Products product) {
+    wishlistController.addToWishlist(product);
+    Get.to(() => WishlistPage()); // Navigate to the wishlist page
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    PageController _controller = PageController();
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -36,6 +70,16 @@ class _HomepageState extends State<Homepage> {
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
         actions: [
+          IconButton(
+            onPressed: () {
+              Get.to(() => WishlistPage());
+            },
+            icon: Icon(
+              CupertinoIcons.heart,
+              size: 40,
+              color: Colors.black,
+            ),
+          ),
           IconButton(
             onPressed: () {},
             icon: const Icon(
@@ -57,6 +101,57 @@ class _HomepageState extends State<Homepage> {
             return const Center(child: Text('No products available'));
           } else {
             final products = snapshot.data!;
+            List<String> categoryNames = products
+                .expand((product) => product.categories)
+                .toSet()
+                .toList();
+            List<Widget> avatars = categoryNames.map((categoryName) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Get.to(() => CategoryProductsPage(
+                            categoryName: categoryName,
+                            products: products,
+                            controller: bottomNavigationController,
+                            cartController: widget.cartController,
+                          ));
+                    },
+                    child: CircleAvatar(
+                      radius: 20,
+                      backgroundColor: Colors.grey.shade200,
+                      child: Text(
+                        categoryName[0].toUpperCase(),
+                        style: const TextStyle(color: Colors.black),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    categoryName,
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                  const SizedBox(height: 20),
+                ],
+              );
+            }).toList();
+            avatars.add(
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircleAvatar(
+                    radius: 20,
+                    backgroundColor: Colors.grey.shade200,
+                    child: const Text(
+                      "View All",
+                      style: TextStyle(fontSize: 8, color: Colors.black),
+                    ),
+                  ),
+                ],
+              ),
+            );
+
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: SingleChildScrollView(
@@ -66,7 +161,7 @@ class _HomepageState extends State<Homepage> {
                     const SizedBox(
                       width: 390,
                       height: 80,
-                      child: const Row(
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           SizedBox(
@@ -103,225 +198,111 @@ class _HomepageState extends State<Homepage> {
                           height: 340,
                           margin: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(8)),
-                            gradient: LinearGradient(
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(8),
+                            ),
+                            gradient: const LinearGradient(
                               colors: [Colors.blue, Colors.black],
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                             ),
                           ),
-                          child: Row(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              SizedBox(
-                                width: 40,
-                              ),
-                              Image.network(
-                                products[index].imageUrl,
-                                width: 100,
-                                height: 150,
-                              ),
-                              SizedBox(
-                                width: 30,
-                              ),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                              Row(
                                 children: [
-                                  Text("Iconic Casual Brands",
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 8)),
-                                  Text(
-                                    '${products[index].name} NGN ${products[index].price}',
-                                    style: TextStyle(color: Colors.white),
+                                  const SizedBox(
+                                    width: 40,
                                   ),
-                                  SizedBox(
-                                    height: 10,
+                                  Image.network(
+                                    products[index].imageUrl,
+                                    width: 100,
+                                    height: 150,
                                   ),
-                                  GestureDetector(
-                                    onTap: () {},
-                                    child: Container(
-                                      width: 113,
-                                      height: 30,
-                                      decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(12))),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Image.asset(
-                                            "assets/cart.png",
-                                            width: 14,
-                                            height: 14,
-                                          ),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Text(
-                                            "Add to Cart",
-                                            style: TextStyle(
-                                                color: Colors.blue.shade800,
-                                                fontSize: 14),
-                                          )
-                                        ],
+                                  const SizedBox(
+                                    width: 20,
+                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Text(
+                                        "Iconic Casual Brands",
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 8),
                                       ),
-                                    ),
+                                      Text(
+                                        '${products[index].name} ₦${products[index].price}',
+                                        style: const TextStyle(
+                                            color: Colors.white),
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                    ],
                                   )
                                 ],
+                              ),
+                              Spacer(),
+                              SmoothPageIndicator(
+                                controller: _controller,
+                                count: 4,
+                                effect: WormEffect(
+                                  dotWidth: 8,
+                                  dotHeight: 8,
+                                  spacing: 16,
+                                  activeDotColor: Colors.white,
+                                  dotColor: Colors.white.withOpacity(0.5),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 10,
                               )
                             ],
                           ),
                         ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: SizedBox(
                         width: 390,
-                        height: 158,
-                        child: Row(
-                          children: [
-                            Column(
-                              children: [
-                                CircleAvatar(
-                                  radius: 20,
-                                  backgroundColor: Colors.grey.shade200,
-                                  child: Image.asset(
-                                    "assets/nike.png",
-                                    color: Colors.black,
-                                    width: 20,
-                                    height: 20,
-                                  ),
-                                ),
-                                Text("Nike"),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                CircleAvatar(
-                                  radius: 20,
-                                  backgroundColor: Colors.grey.shade200,
-                                  child: Image.asset(
-                                    "assets/adidas.png",
-                                    color: Colors.black,
-                                    width: 20,
-                                    height: 20,
-                                  ),
-                                ),
-                                Text("Adidas"),
-                              ],
-                            ),
-                            SizedBox(
-                              width: 30,
-                            ),
-                            Column(
-                              children: [
-                                CircleAvatar(
-                                  radius: 20,
-                                  backgroundColor: Colors.grey.shade200,
-                                  child: Image.asset(
-                                    "assets/gucci.png",
-                                    color: Colors.black,
-                                    width: 20,
-                                    height: 20,
-                                  ),
-                                ),
-                                Text("Gucci"),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                CircleAvatar(
-                                  radius: 20,
-                                  backgroundColor: Colors.grey.shade200,
-                                  child: Image.asset(
-                                    "assets/reebok.png",
-                                    color: Colors.black,
-                                    width: 20,
-                                    height: 20,
-                                  ),
-                                ),
-                                Text("Reebok"),
-                              ],
-                            ),
-                            SizedBox(
-                              width: 30,
-                            ),
-                            Column(
-                              children: [
-                                CircleAvatar(
-                                  radius: 20,
-                                  backgroundColor: Colors.grey.shade200,
-                                  child: Image.asset(
-                                    "assets/jordan.png",
-                                    color: Colors.black,
-                                    width: 20,
-                                    height: 20,
-                                  ),
-                                ),
-                                Text("Jordan"),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                CircleAvatar(
-                                  radius: 20,
-                                  backgroundColor: Colors.grey.shade200,
-                                  child: Image.asset(
-                                    "assets/newbalance.png",
-                                    color: Colors.black,
-                                    width: 20,
-                                    height: 20,
-                                  ),
-                                ),
-                                Text("New Balance"),
-                              ],
-                            ),
-                            SizedBox(
-                              width: 30,
-                            ),
-                            Column(
-                              children: [
-                                CircleAvatar(
-                                  radius: 20,
-                                  backgroundColor: Colors.grey.shade200,
-                                  child: Image.asset(
-                                    "assets/balenciaga.png",
-                                    color: Colors.black,
-                                    width: 20,
-                                    height: 20,
-                                  ),
-                                ),
-                                Text("Balenciaga"),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                CircleAvatar(
-                                    radius: 20,
-                                    backgroundColor: Colors.grey.shade200,
-                                    child: Text(
-                                      "View All",
-                                      style: TextStyle(fontSize: 8),
-                                    ))
-                              ],
-                            )
-                          ],
+                        height: 200,
+                        child: GridView.builder(
+                          physics: NeverScrollableScrollPhysics(),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            mainAxisSpacing: 10,
+                            crossAxisSpacing: 10,
+                            childAspectRatio: 1,
+                          ),
+                          itemCount: avatars.length,
+                          itemBuilder: (context, index) {
+                            return avatars[index];
+                          },
                         ),
                       ),
-                    ),
-                    Text(
-                      "Our Special Offers",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                     ),
                     SizedBox(
                       height: 20,
                     ),
+                    const Text(
+                      "Our Special Offers",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
                     SizedBox(
                       width: 390,
-                      height: 1600,
+                      height: 1320,
                       child: GridView.builder(
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         itemCount: products.length,
                         gridDelegate:
                             const SliverGridDelegateWithMaxCrossAxisExtent(
@@ -332,31 +313,28 @@ class _HomepageState extends State<Homepage> {
                         ),
                         itemBuilder: (context, index) {
                           final product = products[index];
-                          return GestureDetector(
-                            onTap: () {
-                              Get.to(() => Productsdetails(
-                                    product: product,
-                                    controller: controller,
-                                  ));
-                            },
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  width: 168,
-                                  height: 138,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    border: Border.all(
-                                        width: 0.5,
-                                        color: Colors.grey.shade300),
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(32)),
-                                  ),
-                                  child: Stack(children: [
-                                    Positioned(
-                                        top: 10,
-                                        right: 10,
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                width: 168,
+                                height: 138,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border.all(
+                                      width: 0.5, color: Colors.grey.shade300),
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(32)),
+                                ),
+                                child: Stack(children: [
+                                  Positioned(
+                                      top: 10,
+                                      right: 10,
+                                      child: InkWell(
+                                        onTap: () {
+                                          wishlistController
+                                              .addToWishlist(product);
+                                        },
                                         child: Container(
                                           width: 30,
                                           height: 30,
@@ -364,77 +342,126 @@ class _HomepageState extends State<Homepage> {
                                               color: Colors.grey.shade400,
                                               borderRadius:
                                                   BorderRadius.circular(18)),
-                                          child: Icon(
+                                          child: const Icon(
                                             Icons.favorite_border_outlined,
                                             size: 18,
                                             color: Colors.white,
                                           ),
-                                        )),
-                                    Positioned(
-                                      bottom: 0,
-                                      right: 40,
-                                      child: Image.network(
-                                        product.imageUrl,
-                                        width: 100,
-                                        height: 100,
-                                      ),
+                                        ),
+                                      )),
+                                  Positioned(
+                                    bottom: 0,
+                                    right: 40,
+                                    child: Image.network(
+                                      product.imageUrl,
+                                      width: 100,
+                                      height: 100,
                                     ),
-                                  ]),
-                                ),
-                                Text("Athletic/Sportswear"),
-                                Text(
-                                  product.name,
-                                  style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  ),
+                                ]),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  Get.to(() => Productsdetails(
+                                        product: product,
+                                        controller: bottomNavigationController,
+                                        cartController: widget.cartController,
+                                        allProducts: [],
+                                      ));
+                                },
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Image.asset(
-                                      "assets/rate.png",
-                                      width: 10,
-                                      height: 10,
-                                    ),
-                                    Text("4.5 (100 sold)")
-                                  ],
-                                ),
-                                Text(
-                                  'NGN ${product.price}',
-                                  style: TextStyle(color: Colors.blue),
-                                ),
-                                Row(
-                                  children: [
+                                    const Text("Athletic/Sportswear"),
                                     Text(
-                                      'NGN ${product.price * 2}',
-                                      style: TextStyle(
-                                          color: Colors.grey.shade500,
-                                          decoration:
-                                              TextDecoration.lineThrough),
+                                      product.name,
+                                      style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
                                     ),
-                                    Spacer(),
-                                    Container(
-                                        width: 36,
-                                        height: 28,
-                                        decoration: BoxDecoration(
-                                            color: Colors.blue.shade100,
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(16))),
-                                        child: Icon(
-                                          CupertinoIcons.shopping_cart,
-                                          size: 15,
-                                          color: Colors.blue,
-                                        )),
-                                    SizedBox(
-                                      width: 10,
-                                    )
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Image.asset(
+                                          "assets/rate.png",
+                                          width: 10,
+                                          height: 10,
+                                        ),
+                                        const Text("4.5 (100 sold)")
+                                      ],
+                                    ),
+                                    Text(
+                                      'NGN ${product.price}',
+                                      style:
+                                          const TextStyle(color: Colors.blue),
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          'NGN ${product.price * 2}',
+                                          style: TextStyle(
+                                              color: Colors.grey.shade500,
+                                              decoration:
+                                                  TextDecoration.lineThrough),
+                                        ),
+                                        const Spacer(),
+                                        Container(
+                                            width: 36,
+                                            height: 28,
+                                            decoration: BoxDecoration(
+                                                color: Colors.blue.shade100,
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        Radius.circular(16))),
+                                            child: const Icon(
+                                              CupertinoIcons.shopping_cart,
+                                              size: 15,
+                                              color: Colors.blue,
+                                            )),
+                                        const SizedBox(
+                                          width: 10,
+                                        )
+                                      ],
+                                    ),
                                   ],
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           );
                         },
                       ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    InkWell(
+                      onTap: () {
+                        bottomNavigationController.changePage(1);
+                        Get.off(() => ProductsPage(
+                              bottomNavigationController:
+                                  bottomNavigationController,
+                              cartController: widget.cartController,
+                            ));
+                      },
+                      child: Center(
+                        child: Container(
+                          width: 70,
+                          height: 30,
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.blue, width: 2)),
+                          child: Text(
+                            "View all",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: Colors.blue.shade700,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
                     ),
                   ],
                 ),
@@ -443,58 +470,9 @@ class _HomepageState extends State<Homepage> {
           }
         },
       ),
-      bottomNavigationBar: Obx(
-        () => BottomNavigationBar(
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.rectangle_3_offgrid),
-              label: 'All Products',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.shopping_cart),
-              label: 'Cart',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.bag_fill),
-              label: 'My Order',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.person),
-              label: 'Profile',
-            ),
-          ],
-          currentIndex: controller.currentIndex.value,
-          selectedItemColor: Colors.blue,
-          unselectedItemColor: Colors.grey,
-          showUnselectedLabels: true,
-          type: BottomNavigationBarType.fixed,
-          onTap: (index) {
-            controller.changePage(index);
-            switch (index) {
-              case 0:
-                Get.off(() => Homepage());
-                break;
-              case 1:
-                //Get.to(()=> Productspage());
-                break;
-              case 2:
-                Get.to(() => CartPage(
-                      checkoutItems: [],
-                    ));
-                break;
-              case 3:
-                //Get.to(()=> MyOrderPage());
-                break;
-              case 4:
-                // Get.to(()=> ProfilePage());
-                break;
-            }
-          },
-        ),
+      bottomNavigationBar: BottomNavBar(
+        bottomNavigationController: bottomNavigationController,
+        cartController: widget.cartController,
       ),
     );
   }

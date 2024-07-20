@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pixel_perfect/cart.dart';
 import 'package:pixel_perfect/controller/bottomnav.dart';
+import 'package:pixel_perfect/controller/cartcontroller.dart';
 import 'package:pixel_perfect/homepage.dart';
 
 void main() {
-  final BottomNavigationController controller;
+  Get.put(
+      BottomNavigationController(cartController: Get.put(CartController())));
+  Get.put(CartController());
+
   runApp(MyApp());
 }
 
@@ -26,12 +30,17 @@ class MyApp extends StatelessWidget {
       // home: Homepage(),
       initialRoute: '/home',
       getPages: [
-        GetPage(name: '/home', page: () => Homepage()),
+        GetPage(
+            name: '/home',
+            page: () => Homepage(
+                  cartController: Get.find(),
+                )),
         //GetPage(name: '/all-products', page: () => AllProductsPage()),
         GetPage(
             name: '/cart',
             page: () => CartPage(
-                  checkoutItems: [],
+                  cartController: Get.find(),
+                  bottomNavigationController: Get.find(),
                 )),
         //GetPage(name: '/my-order', page: () => MyOrderPage()),
         //GetPage(name: '/profile', page: () => ProfilePage()),

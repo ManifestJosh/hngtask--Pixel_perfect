@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pixel_perfect/controller/bottomnav.dart';
 import 'package:pixel_perfect/main.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Create a mock instance of BottomNavigationController
-    final controller = BottomNavigationController();
 
     // Build our app and trigger a frame.
     await tester.pumpWidget(MyApp());
