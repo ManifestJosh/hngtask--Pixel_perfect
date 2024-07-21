@@ -174,12 +174,22 @@ class _HomepageState extends State<Homepage> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CircleAvatar(
-                    radius: 20,
-                    backgroundColor: Colors.grey.shade200,
-                    child: const Text(
-                      "View All",
-                      style: TextStyle(fontSize: 8, color: Colors.black),
+                  InkWell(
+                    onTap: () {
+                      bottomNavigationController.changePage(1);
+                      Get.off(() => ProductsPage(
+                            bottomNavigationController:
+                                bottomNavigationController,
+                            cartController: widget.cartController,
+                          ));
+                    },
+                    child: CircleAvatar(
+                      radius: 20,
+                      backgroundColor: Colors.grey.shade200,
+                      child: const Text(
+                        "View All",
+                        style: TextStyle(fontSize: 8, color: Colors.black),
+                      ),
                     ),
                   ),
                 ],
@@ -525,37 +535,6 @@ class _HomepageState extends State<Homepage> {
                           );
                         },
                       ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    InkWell(
-                      onTap: () {
-                        bottomNavigationController.changePage(1);
-                        Get.off(() => ProductsPage(
-                              bottomNavigationController:
-                                  bottomNavigationController,
-                              cartController: widget.cartController,
-                            ));
-                      },
-                      child: Center(
-                        child: Container(
-                          width: 70,
-                          height: 30,
-                          decoration: BoxDecoration(
-                              border: Border.all(color: Colors.blue, width: 2)),
-                          child: Text(
-                            "View all",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: Colors.blue.shade700,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20,
                     ),
                   ],
                 ),
