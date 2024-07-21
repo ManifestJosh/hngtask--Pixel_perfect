@@ -15,7 +15,9 @@ Below are the pages for from the bottomNavigator bar :
 5. Category page e.g: Nike
 
 
-![Screenshot_1721464181](https://github.com/user-attachments/assets/8d454a24-ed23-41ff-8935-fd1953f238ca)
+![Screenshot_1721470328](https://github.com/user-attachments/assets/38a85169-1929-441b-9871-63d27de7ab8b)
+
+
 ![Screenshot_1721464175](https://github.com/user-attachments/assets/c33cee96-c036-4adc-a0f6-261b5be96c04)
 ![Screenshot_1721464171](https://github.com/user-attachments/assets/957c1175-94e5-4a1f-8acd-3adbebfabeee)
 ![Screenshot_1721464150](https://github.com/user-attachments/assets/23d85cd3-6908-4357-814c-6470eb9493e5)
@@ -29,5 +31,5 @@ Below are the pages for from the bottomNavigator bar :
 - **Intuitive UI:** User-friendly and adaptive interface with clear labeling and spacing.
 
 App download link
-https://drive.google.com/file/d/1iWmPwQnaXk13Dzb24mna75S_y1gfV6qU/view?usp=drive_link
-https://appetize.io/app/b_w3ucnvkommisonykdfvuyzh3e4
+https://drive.google.com/file/d/1_448pHv-nharh8i9vGA0BEfInoywUWgV/view?usp=drive_link
+https://appetize.io/app/b_mlr5fh6aynf3iauw243echuwi4
