@@ -22,8 +22,8 @@ Below are the pages for from the bottomNavigator bar :
 
 ![Screenshot_1721464175](https://github.com/user-attachments/assets/c33cee96-c036-4adc-a0f6-261b5be96c04)
 
-![Screenshot_1721464150](https://github.com/user-attachments/assets/23d85cd3-6908-4357-814c-6470eb9493e5)
-![Screenshot_1721464133](https://github.com/user-attachments/assets/b6f91a2a-7aae-41d2-b440-95cd7472ec47)
+![Screenshot_1721520977](https://github.com/user-attachments/assets/b0e8ca89-8c8f-4ceb-af06-233a3b103b4a)
+
 
 - **Product Listing:** Display a list of products fetched from the Timbu API.
 - **Product Details:** View detailed information about each product, including sizes, colors, and reviews.
