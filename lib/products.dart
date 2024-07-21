@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pixel_perfect/Api.dart';
 import 'package:pixel_perfect/controller/cartcontroller.dart';
+import 'package:pixel_perfect/controller/wishlist.dart';
 
 import 'controller/bottomnav.dart';
 import 'productsdetails.dart';
@@ -22,6 +23,7 @@ class ProductsPage extends StatefulWidget {
 
 class _ProductsPageState extends State<ProductsPage> {
   final TimbuApi timbuApi = TimbuApi();
+  final WishlistController wishlistController = Get.put(WishlistController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,95 +73,146 @@ class _ProductsPageState extends State<ProductsPage> {
                                 ));
                           },
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                width: 168,
-                                height: 138,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  border: Border.all(
-                                      width: 0.5, color: Colors.grey.shade300),
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(32)),
-                                ),
-                                child: Stack(children: [
-                                  Positioned(
-                                      top: 10,
-                                      right: 10,
-                                      child: Container(
-                                        width: 30,
-                                        height: 30,
-                                        decoration: BoxDecoration(
-                                            color: Colors.grey.shade400,
-                                            borderRadius:
-                                                BorderRadius.circular(18)),
-                                        child: Icon(
-                                          Icons.favorite_border_outlined,
-                                          size: 18,
-                                          color: Colors.white,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width: 168,
+                                  height: 250,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    border: Border.all(
+                                        width: 0.5,
+                                        color: Colors.grey.shade300),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(32)),
+                                  ),
+                                  child: Stack(children: [
+                                    Positioned(
+                                        top: 10,
+                                        right: 10,
+                                        child: InkWell(
+                                          onTap: () {
+                                            wishlistController
+                                                .toggleFavorite(product);
+                                          },
+                                          child: Container(
+                                            width: 30,
+                                            height: 30,
+                                            decoration: BoxDecoration(
+                                              color: wishlistController.products
+                                                      .contains(product)
+                                                  ? Colors.red
+                                                  : Colors.grey.shade400,
+                                              borderRadius:
+                                                  BorderRadius.circular(18),
+                                            ),
+                                            child: Icon(
+                                              wishlistController.products
+                                                      .contains(product)
+                                                  ? Icons.favorite
+                                                  : Icons
+                                                      .favorite_border_outlined,
+                                              size: 18,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        )),
+                                    Positioned(
+                                      top: 150,
+                                      left: 0,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          Get.to(() => Productsdetails(
+                                                product: product,
+                                                controller: widget
+                                                    .bottomNavigationController,
+                                                cartController:
+                                                    widget.cartController,
+                                                allProducts: products,
+                                              ));
+                                        },
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            const Text("Athletic/Sportswear"),
+                                            Text(
+                                              product.name,
+                                              style: const TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: [
+                                                Image.asset(
+                                                  "assets/rate.png",
+                                                  width: 10,
+                                                  height: 10,
+                                                ),
+                                                const Text("4.5 (100 sold)")
+                                              ],
+                                            ),
+                                            Text(
+                                              'NGN ${product.price}',
+                                              style: const TextStyle(
+                                                  color: Colors.blue),
+                                            ),
+                                            Text(
+                                              'NGN ${product.price * 2}',
+                                              style: TextStyle(
+                                                  color: Colors.grey.shade500,
+                                                  decoration: TextDecoration
+                                                      .lineThrough),
+                                            ),
+                                          ],
                                         ),
-                                      )),
-                                  Positioned(
-                                    bottom: 0,
-                                    right: 40,
-                                    child: Image.network(
-                                      product.imageUrl,
-                                      width: 100,
-                                      height: 100,
+                                      ),
                                     ),
-                                  ),
-                                ]),
-                              ),
-                              Text("Athletic/Sportswear"),
-                              Text(
-                                product.name,
-                                style: const TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.bold),
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Image.asset(
-                                    "assets/rate.png",
-                                    width: 10,
-                                    height: 10,
-                                  ),
-                                  Text("4.5 (100 sold)")
-                                ],
-                              ),
-                              Text(
-                                'NGN ${product.price}',
-                                style: TextStyle(color: Colors.blue),
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                    'NGN ${product.price * 2}',
-                                    style: TextStyle(
-                                        color: Colors.grey.shade500,
-                                        decoration: TextDecoration.lineThrough),
-                                  ),
-                                  Spacer(),
-                                  Container(
-                                      width: 36,
-                                      height: 28,
-                                      decoration: BoxDecoration(
-                                          color: Colors.blue.shade100,
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(16))),
-                                      child: Icon(
-                                        CupertinoIcons.shopping_cart,
-                                        size: 15,
-                                        color: Colors.blue,
-                                      )),
-                                  SizedBox(
-                                    width: 10,
-                                  )
-                                ],
-                              ),
-                            ],
-                          ),
+                                    Positioned(
+                                      right: 0,
+                                      bottom: 0,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          final productMap = {
+                                            'product image':
+                                                products[index].imageUrl,
+                                            'product': products[index].name,
+                                            'price': products[index].price,
+                                            'quantity':
+                                                products[index].quantity,
+                                          };
+                                          widget.cartController
+                                              .addItem(productMap);
+                                        },
+                                        child: Container(
+                                            width: 36,
+                                            height: 28,
+                                            decoration: BoxDecoration(
+                                                color: Colors.blue.shade100,
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        Radius.circular(16))),
+                                            child: const Icon(
+                                              CupertinoIcons.shopping_cart,
+                                              size: 15,
+                                              color: Colors.blue,
+                                            )),
+                                      ),
+                                    ),
+                                    Positioned(
+                                      top: 20,
+                                      right: 40,
+                                      child: Image.network(
+                                        product.imageUrl,
+                                        width: 100,
+                                        height: 100,
+                                      ),
+                                    ),
+                                  ]),
+                                ),
+                              ]),
                         );
                       },
                     ),

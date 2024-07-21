@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class CartController extends GetxController {
@@ -6,6 +8,8 @@ class CartController extends GetxController {
 
   void addItem(Map<String, dynamic> item) {
     Items.add(item);
+    Get.snackbar("Added to Cart", "Check Cart Page for your product",
+        backgroundColor: Colors.blue.shade50, colorText: Colors.blue.shade700);
     updateTotalPrice();
   }
 

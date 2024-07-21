@@ -76,7 +76,7 @@ class _CartPageState extends State<CartPage> {
                           return Icon(Icons.error);
                         },
                       ),
-                      title: Text(product),
+                      title: Text(product ?? ''),
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -99,7 +99,7 @@ class _CartPageState extends State<CartPage> {
                                 ),
                               ),
                               Container(
-                                width: 20,
+                                width: 30,
                                 height: 20,
                                 decoration:
                                     BoxDecoration(color: Colors.blue.shade50),

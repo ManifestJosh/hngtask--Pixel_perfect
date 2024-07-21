@@ -34,10 +34,10 @@ class _HomepageState extends State<Homepage> {
   @override
   void initState() {
     super.initState();
-    _timer = Timer.periodic(Duration(seconds: 2), (timer) {
+    _timer = Timer.periodic(Duration(seconds: 4), (timer) {
       if (_controller.hasClients) {
         final page = (_controller.page ?? 0).toInt();
-        final nextPage = (page + 1) % 4; // Assuming you have 4 pages
+        final nextPage = (page + 1) % 4;
         _controller.animateToPage(
           nextPage,
           duration: Duration(milliseconds: 300),
@@ -65,6 +65,36 @@ class _HomepageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
+    final List<LinearGradient> gradients = [
+      const LinearGradient(
+        colors: [Colors.blue, Colors.black],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ),
+      const LinearGradient(
+        colors: [Colors.red, Colors.black],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ),
+      const LinearGradient(
+        colors: [Colors.black, Colors.yellow],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ),
+      const LinearGradient(
+        colors: [Colors.purple, Colors.black],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ),
+    ];
+
+    final List<Color> colors = [
+      Colors.blue,
+      Colors.red,
+      Colors.black,
+      Colors.purple,
+    ];
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -205,11 +235,7 @@ class _HomepageState extends State<Homepage> {
                             borderRadius: const BorderRadius.all(
                               Radius.circular(8),
                             ),
-                            gradient: const LinearGradient(
-                              colors: [Colors.blue, Colors.black],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
+                            gradient: gradients[index % gradients.length],
                           ),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -231,7 +257,7 @@ class _HomepageState extends State<Homepage> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       const Text(
-                                        "Iconic Casual Brands",
+                                        "Iconic Sports Brands",
                                         style: TextStyle(
                                             color: Colors.white, fontSize: 8),
                                       ),
@@ -243,6 +269,46 @@ class _HomepageState extends State<Homepage> {
                                       const SizedBox(
                                         height: 10,
                                       ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          final productMap = {
+                                            'product image':
+                                                products[index].imageUrl,
+                                            'product': products[index].name,
+                                            'price': products[index].price,
+                                            'quantity':
+                                                products[index].quantity,
+                                          };
+                                          widget.cartController
+                                              .addItem(productMap);
+                                        },
+                                        child: Container(
+                                          width: 113,
+                                          height: 30,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(16)),
+                                            color: Colors.white,
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Icon(CupertinoIcons.cart,
+                                                  size: 14,
+                                                  color: colors[
+                                                      index % colors.length]),
+                                              Text(
+                                                "Add to Cart",
+                                                style: TextStyle(
+                                                    color: colors[
+                                                        index % colors.length],
+                                                    fontSize: 10),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      )
                                     ],
                                   )
                                 ],
@@ -322,7 +388,7 @@ class _HomepageState extends State<Homepage> {
                             children: [
                               Container(
                                 width: 168,
-                                height: 138,
+                                height: 250,
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   border: Border.all(
@@ -337,24 +403,115 @@ class _HomepageState extends State<Homepage> {
                                       child: InkWell(
                                         onTap: () {
                                           wishlistController
-                                              .addToWishlist(product);
+                                              .toggleFavorite(product);
                                         },
                                         child: Container(
                                           width: 30,
                                           height: 30,
                                           decoration: BoxDecoration(
-                                              color: Colors.grey.shade400,
-                                              borderRadius:
-                                                  BorderRadius.circular(18)),
-                                          child: const Icon(
-                                            Icons.favorite_border_outlined,
+                                            color: wishlistController.products
+                                                    .contains(product)
+                                                ? Colors.red
+                                                : Colors.grey.shade400,
+                                            borderRadius:
+                                                BorderRadius.circular(18),
+                                          ),
+                                          child: Icon(
+                                            wishlistController.products
+                                                    .contains(product)
+                                                ? Icons.favorite
+                                                : Icons
+                                                    .favorite_border_outlined,
                                             size: 18,
                                             color: Colors.white,
                                           ),
                                         ),
                                       )),
                                   Positioned(
+                                    top: 150,
+                                    left: 0,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Get.to(() => Productsdetails(
+                                              product: product,
+                                              controller:
+                                                  bottomNavigationController,
+                                              cartController:
+                                                  widget.cartController,
+                                              allProducts: products,
+                                            ));
+                                      },
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          const Text("Athletic/Sportswear"),
+                                          Text(
+                                            product.name,
+                                            style: const TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              Image.asset(
+                                                "assets/rate.png",
+                                                width: 10,
+                                                height: 10,
+                                              ),
+                                              const Text("4.5 (100 sold)")
+                                            ],
+                                          ),
+                                          Text(
+                                            'NGN ${product.price}',
+                                            style: const TextStyle(
+                                                color: Colors.blue),
+                                          ),
+                                          Text(
+                                            'NGN ${product.price * 2}',
+                                            style: TextStyle(
+                                                color: Colors.grey.shade500,
+                                                decoration:
+                                                    TextDecoration.lineThrough),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    right: 0,
                                     bottom: 0,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        final productMap = {
+                                          'product image':
+                                              products[index].imageUrl,
+                                          'product': products[index].name,
+                                          'price': products[index].price,
+                                          'quantity': products[index].quantity,
+                                        };
+                                        widget.cartController
+                                            .addItem(productMap);
+                                      },
+                                      child: Container(
+                                          width: 36,
+                                          height: 28,
+                                          decoration: BoxDecoration(
+                                              color: Colors.blue.shade100,
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                      Radius.circular(16))),
+                                          child: const Icon(
+                                            CupertinoIcons.shopping_cart,
+                                            size: 15,
+                                            color: Colors.blue,
+                                          )),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    top: 20,
                                     right: 40,
                                     child: Image.network(
                                       product.imageUrl,
@@ -363,73 +520,6 @@ class _HomepageState extends State<Homepage> {
                                     ),
                                   ),
                                 ]),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  Get.to(() => Productsdetails(
-                                        product: product,
-                                        controller: bottomNavigationController,
-                                        cartController: widget.cartController,
-                                        allProducts: products,
-                                      ));
-                                },
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text("Athletic/Sportswear"),
-                                    Text(
-                                      product.name,
-                                      style: const TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Image.asset(
-                                          "assets/rate.png",
-                                          width: 10,
-                                          height: 10,
-                                        ),
-                                        const Text("4.5 (100 sold)")
-                                      ],
-                                    ),
-                                    Text(
-                                      'NGN ${product.price}',
-                                      style:
-                                          const TextStyle(color: Colors.blue),
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          'NGN ${product.price * 2}',
-                                          style: TextStyle(
-                                              color: Colors.grey.shade500,
-                                              decoration:
-                                                  TextDecoration.lineThrough),
-                                        ),
-                                        const Spacer(),
-                                        Container(
-                                            width: 36,
-                                            height: 28,
-                                            decoration: BoxDecoration(
-                                                color: Colors.blue.shade100,
-                                                borderRadius:
-                                                    const BorderRadius.all(
-                                                        Radius.circular(16))),
-                                            child: const Icon(
-                                              CupertinoIcons.shopping_cart,
-                                              size: 15,
-                                              color: Colors.blue,
-                                            )),
-                                        const SizedBox(
-                                          width: 10,
-                                        )
-                                      ],
-                                    ),
-                                  ],
-                                ),
                               ),
                             ],
                           );
