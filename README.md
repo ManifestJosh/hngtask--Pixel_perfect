@@ -16,10 +16,12 @@ Below are the pages for from the bottomNavigator bar :
 
 
 ![Screenshot_1721470328](https://github.com/user-attachments/assets/38a85169-1929-441b-9871-63d27de7ab8b)
+![Screenshot_1721520879](https://github.com/user-attachments/assets/a974287a-31bf-4a67-991c-6c4290ee78e9)
+![Screenshot_1721520875](https://github.com/user-attachments/assets/eaa7d792-da85-473a-a233-b9682270ca44)
 
 
 ![Screenshot_1721464175](https://github.com/user-attachments/assets/c33cee96-c036-4adc-a0f6-261b5be96c04)
-![Screenshot_1721464171](https://github.com/user-attachments/assets/957c1175-94e5-4a1f-8acd-3adbebfabeee)
+
 ![Screenshot_1721464150](https://github.com/user-attachments/assets/23d85cd3-6908-4357-814c-6470eb9493e5)
 ![Screenshot_1721464133](https://github.com/user-attachments/assets/b6f91a2a-7aae-41d2-b440-95cd7472ec47)
 
